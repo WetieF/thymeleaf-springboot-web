@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+<head>
+<meta charset="utf-8">
+<title>Product management Systeme</title>
+</head>
+<body>
+
+	<div layout:fragment="layout :: menu"></div>
+	
+	<div layout:fragment="content">
+		
+		<h3 th:inline="text" style="color: red; text-align: center; margin-top: 15px">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
+	
+		<div class="container" style="margin-top: 10px">
+				
+			<div class="card">
+				<div class="card-header" style="background-color: aqua;">List of Products</div>
+				
+				<div class="card-body">
+					<form th:action="@{/page/1}" method="get">
+						<input type="hidden" name="sortField" th:value="${sortField}"/>
+					    <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+						<label>Filter: </label>
+						<input type="text" name="motCle" th:value="${motCle}" required="required" />
+						<button type="submit" class="btn btn-primary">Search</button>
+						<button type="button" class="btn btn-primary" onclick="clearFilter()">Clear</button>
+					</form>
+					
+					<!-- <form action="">
+					    <input type="hidden" name="sortField" th:value="${sortField}"/>
+					    <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+						Filter: &nbsp;
+						<input type="text" name="keyword" required="required" th:value="${keyword}"/> &nbsp;
+					    <input type="submit" value="Search"/>&nbsp;
+					    <input type="button" value="Clear"/>
+				    </form> -->
+			    </div>
+				
+				<div class="card-body">
+				 <table class="table table-striped">
+				 	<thead>
+				 		<tr>
+					 		<th><a th:href="@{'/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">ID</a></th>
+					 		<th><a th:href="@{'/page/' + ${currentPage} + '?sortField=produitName&sortDir=' + ${reverseSortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">NAME</a></th>
+					 		<th><a th:href="@{'/page/' + ${currentPage} + '?sortField=madeIn&sortDir=' + ${reverseSortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">MADEIN</a></th>
+					 		<th><a th:href="@{'/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">PRICE</a></th>
+					 		<th>ACTIONS</th>
+				 		</tr>
+				 	</thead>
+				 	<tbody>
+				 		<tr th:each="p : ${produits}">
+				 			<td th:text="${p.id}"></td>
+				 			<td th:text="${p.produitName}"></td>
+				 			<td th:text="${p.madeIn}"></td>
+				 			<td th:text="${p.price}"></td>
+				 			<td>
+				 				<a th:href="@{/editProduit/{id}(id = ${p.id})}" class="btn btn-primary">Edit</a>
+				 				<a onclick="return confirm('Etes vous sure de vouloir supprimer ?')" th:href="@{/deleteProduit/{id}(id = ${p.id})}" class="btn btn-danger">Delete</a>
+				 			</td>
+				 		</tr>
+				 	</tbody>
+				 </table>
+				</div>
+				
+				<hr>
+				<div style="margin-left: 18px">
+			    	Total Elements : [[${totalElements}]] &nbsp; - &nbsp; Page [[${currentPage}]] of [[${totalPages}]] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			    	
+			    	                              <!-- First Page  th:href="@{/page/1} + '?sortField=' + ${sortField} -- th:href="@{'/page/1?sortField=' + ${sortField}-->
+			    	<span>
+			    		<a th:if="${currentPage > 1}" th:href="@{'/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">First</a>
+			    		<span th:unless="${currentPage > 1}" style="color: red;">First</span>&nbsp;&nbsp;
+			    	</span>
+			    	
+			    	                              <!-- Previous Page -->
+			    	<span>
+			    		<a th:if="${currentPage > 1}" th:href="@{'/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">Previous</a>
+			    		<span th:unless="${currentPage > 1}" style="color: red;">Previous</span>&nbsp;&nbsp;
+			    	</span>
+			    	
+			    	                              <!-- Iteration of Pages -->
+			    	<span th:each="p : ${#numbers.sequence(1, totalPages)}">
+			    		<a th:if="${currentPage != p}" th:href="@{'/page/' + ${p} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">[[${p}]]</a> <!-- th:text="${p}" -->
+			    		<span th:unless="${currentPage != p}" style="color: red;">[[${p}]]</span>&nbsp;&nbsp;
+			    	</span>
+			    	
+			    	                              <!-- Next Page -->
+			    	<span>
+			    		<a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">Next</a>
+			    		<span th:unless="${currentPage < totalPages}" style="color: red;">Next</span>&nbsp;&nbsp;
+			    	</span>
+			    	
+			    	                              <!-- Last Page -->
+			    	<span>
+			    		<a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${motCle != null ? '&motCle=' + motCle : ''}}">Last</a>
+			    		<span th:unless="${currentPage < totalPages}" style="color: red;">Last</span>&nbsp;&nbsp;
+			    	</span>
+			    	
+			    	
+			    </div>
+				
+			</div>			
+		</div>
+		
+		<script type="text/javascript">
+			function clearFilter() {
+				window.location = '/';
+			}
+		</script>
+		
+	</div>
+	
+	<div layout:fragment="layout :: footer">
+	</div>	
+		
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+<head>
+<meta charset="UTF-8">
+<title>Product management Systeme</title>
+</head>
+<body>
+
+	<div layout:fragment="layout :: menu"></div>
+	
+	<div layout:fragment="content">
+	
+		<div class="container" style="margin-top: 10px">
+			<div class="card">
+				<div class="card-header">New Product</div>
+				<div class="card-body">
+				
+					<form th:action="@{/saveProduit}" th:object="${produit}" method="post" >
+					
+					<div class="form-group">						
+						<!-- <label class="control-label">First Name</label> --> 
+						<input type="text" th:field="${produit.produitName}" placeholder="Enter Produit Name" class="form-control" />
+						<span th:errors="${produit.produitName}" class="text-danger"></span>
+					</div>
+					
+					<div class="form-group">						
+						<!-- <label class="control-label">First Name</label> --> 
+						<input type="text" th:field="${produit.madeIn}" placeholder="Enter Made In Name" class="form-control" />
+						<span th:errors="${produit.madeIn}" class="text-danger"></span>
+					</div>
+					
+					<div class="form-group">						
+						<!-- <label class="control-label">First Name</label> --> 
+						<input type="text" th:field="${produit.price}" placeholder="Enter Price" class="form-control" />
+						<span th:errors="${produit.price}" class="text-danger"></span>
+					</div>
+					
+					<div>
+						<button class="btn btn-primary" type="submit">Save</button>
+					</div>
+					
+					</form>
+				
+				</div>
+				
+				<div style="margin-left: 20px; margin-bottom: 10px"><a th:href="@{/}">Back To List</a></div> 
+				
+			</div>
+		</div>
+				
+	</div>
+	
+	<div layout:fragment="layout :: footer">
+	</div>
+	
+</body>
+</html>
